@@ -1,0 +1,22 @@
+name: 뉴스 이슈 자동 등록
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  news-to-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: 패키지 설치
+        run: pip install feedparser requests -q
+      - name: 뉴스 이슈 생성
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: python3 .github/scripts/news_issues.py
